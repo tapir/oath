@@ -33,12 +33,12 @@ func Done() {
 //		window determines how many OTPs after/before start OTP to test.
 //		otp is the one-time-password to check for validity.
 //
-// Returns true if OTP is valid.
-func TOTPValidate(secret string, timeStep, window uint, otp string) (bool, error) {
+// Returns an error if OTP is invalid.
+func TOTPValidate(secret string, timeStep, window uint, otp string) error {
 	// Decode base32 encoded string
 	bsecret, err := base32.StdEncoding.DecodeString(secret)
 	if err != nil {
-		return false, err
+		return err
 	}
 
 	// Convert secret to char array
@@ -58,9 +58,9 @@ func TOTPValidate(secret string, timeStep, window uint, otp string) (bool, error
 		cotp))
 	// Check if error occured
 	if r < 0 {
-		return false, errors.New("OTP is invalid or an error occured.")
+		return errors.New("OTP is invalid or an error occured.")
 	}
-	return true, nil
+	return nil
 }
 
 // TOTPGenerate generates an OTP for the current unix time.
